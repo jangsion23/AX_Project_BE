@@ -1,69 +1,90 @@
 package com.knuaf.chickenstock.service;
 
-import com.knuaf.chickenstock.dto.MemberDTO;
-import com.knuaf.chickenstock.entity.MemberEntity;
+import com.knuaf.chickenstock.dto.*;
+import com.knuaf.chickenstock.entity.Member;
+import com.knuaf.chickenstock.entity.RefreshToken;
+import com.knuaf.chickenstock.jwt.JwtTokenProvider;
 import com.knuaf.chickenstock.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.knuaf.chickenstock.repository.RefreshTokenRepository;
 
-import java.util.ArrayList;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 import java.util.Optional;
 
-@Service //스프링이 관리해주는 객체 == 스프링 빈
-@RequiredArgsConstructor //controller와 같이. final 멤버변수 생성자 만드는 역할
+@Service
+@RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
-    private final MemberRepository memberRepository; // 먼저 jpa, mysql dependency 추가
+    private final MemberRepository memberRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public void save(MemberDTO memberDTO) {
-        // repsitory의 save 메서드 호출
-        MemberEntity memberEntity = MemberEntity.toMemberEntity(memberDTO);
-        memberRepository.save(memberEntity);
-        //Repository의 save메서드 호출 (조건. entity객체를 넘겨줘야 함)
+    public ResponseDto join(SignUpDto signUpDto) throws Exception {
+        // 중복 학번 검사
+        if (memberRepository.findByStudentId(signUpDto.getStudentId()).isPresent()) {
+            throw new Exception("이미 가입된 학번 입니다.");
+        }
 
+        // 비밀번호 일치 확인
+        if (!signUpDto.getPassword().equals(signUpDto.getCheckPassword())) {
+            throw new Exception("비밀번호가 일치 하지 않습니다.");
+        }
+
+        // Member 엔티티 생성 (비밀번호는 반드시 encode해서 저장!)
+        Member member = Member.builder()
+                .studentId(signUpDto.getStudentId())
+                .password(passwordEncoder.encode(signUpDto.getPassword()))
+                .name(signUpDto.getName())
+                .college1(signUpDto.getCollege1())
+                .college2(signUpDto.getCollege2())
+                .major1(signUpDto.getMajor1())
+                .major2(signUpDto.getMajor2())
+                .profile_image("NULL")
+                .roles(Collections.singletonList("ROLE_USER"))
+                .build();
+
+        memberRepository.save(member);
+
+        return ResponseDto.builder()
+                .status(200)
+                .responseMessage("회원가입 성공")
+                .data(null)
+                .build();
     }
 
-    public MemberDTO login(MemberDTO memberDTO){ //entity객체는 service에서만
-        Optional<MemberEntity> byMemberEmail = memberRepository.findByMemberEmail(memberDTO.getMemberEmail());
-        if(byMemberEmail.isPresent()){
-            MemberEntity memberEntity = byMemberEmail.get();
-            if(memberEntity.getMemberPassword().equals(memberDTO.getMemberPassword())) {
-                //비밀번호 일치
-                //entity -> dto 변환 후 리턴
-                MemberDTO dto = MemberDTO.toMemberDTO(memberEntity);
-                return dto;
-            } else {
-                //비밀번호 불일치
-                return null;
-            }
+    public ResponseDto login(SignInDto signInDto) {
+        // 1. 유저 확인
+        Member member = memberRepository.findByStudentId(signInDto.getStudentId())
+                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 학번입니다."));
+
+        // 2. 비밀번호 확인
+        if (!passwordEncoder.matches(signInDto.getPassword(), member.getPassword())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        // 3. 토큰 생성 (TokenDto인지 TokenInfo인지 Provider와 이름을 꼭 맞추세요!)
+        TokenInfo tokenInfo = jwtTokenProvider.generateToken(member.getStudentId(), member.getRoles());
+
+        // 4. RefreshToken 업데이트 로직
+        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByStudentId(member.getStudentId());
+
+        if (refreshToken.isPresent()) {
+            refreshTokenRepository.save(refreshToken.get().updateToken(tokenInfo.getRefreshToken()));
         } else {
-            // 조회 결과가 없다
-            return null;
+            RefreshToken newToken = new RefreshToken(tokenInfo.getRefreshToken(), member.getStudentId());
+            refreshTokenRepository.save(newToken);
         }
-    }
-    public List<MemberDTO> findAll() {
-        List<MemberEntity> memberEntityList = memberRepository.findAll();
-        //Controller로 dto로 변환해서 줘야 함
-        List<MemberDTO> memberDTOList = new ArrayList<>();
-        for (MemberEntity memberEntity : memberEntityList){
-            memberDTOList.add(MemberDTO.toMemberDTO(memberEntity));
 
-        }
-        return memberDTOList;
-
-    }
-
-    public MemberDTO findById(Long id) {
-        // 하나 조회할때 optional로 감싸줌
-        Optional<MemberEntity> optionalMemberEntity = memberRepository.findById(id);
-        if (optionalMemberEntity.isPresent()){
-            return MemberDTO.toMemberDTO(optionalMemberEntity.get()); // optional을 벗겨내서 entity -> dto 변환
-        }else {
-            return null;
-        }
-    }
-    public void deleteByid(Long id) {
-        memberRepository.deleteById(id);
+        return ResponseDto.builder()
+                .status(200)
+                .responseMessage("로그인 성공")
+                .data(tokenInfo)
+                .build();
     }
 }

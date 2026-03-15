@@ -1,14 +1,14 @@
 package com.knuaf.chickenstock.repository;
 
-import com.knuaf.chickenstock.entity.MemberEntity;
+import com.knuaf.chickenstock.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import javax.swing.text.html.Option;
+import com.knuaf.chickenstock.entity.Member;
 import java.util.Optional;
 
 @Repository
-public interface MemberRepository extends JpaRepository<MemberEntity, Long> {
-
-    Optional<MemberEntity> findByMemberEmail(String memberEmail);
+public interface MemberRepository extends JpaRepository<Member, Long> {
+    Optional<Member> findByStudentId(String student_id);
+    Optional<Member> findByName(String username);
 }

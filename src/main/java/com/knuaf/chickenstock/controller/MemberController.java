@@ -1,76 +1,38 @@
 package com.knuaf.chickenstock.controller;
 
-
-import org.springframework.ui.Model;
-import com.knuaf.chickenstock.dto.MemberDTO;
+import com.knuaf.chickenstock.dto.ResponseDto;
+import com.knuaf.chickenstock.dto.SignInDto;
+import com.knuaf.chickenstock.dto.SignUpDto;
 import com.knuaf.chickenstock.service.MemberService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.List;
-
-@Controller
+@RestController
+@RequestMapping("/api/")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/member/save")
-    public String saveForm() {
-        return "save";
-    }
+    @PostMapping("/join")
+    public ResponseEntity<?> join(@RequestBody SignUpDto signUpDto) throws Exception {
 
-    @PostMapping("/member/save")
-    public String save(@ModelAttribute MemberDTO memberDto) {
-        System.out.println("MemberController.save");
-        System.out.println("memberDTO = " + memberDto);
+        ResponseDto responseDto = memberService.join(signUpDto);
 
-        memberService.save(memberDto);
-        return "index";
-    }
-
-    @GetMapping("/member/login")
-    public String loginForm() {
-        return "login";
-    }
-
-    @PostMapping("/member/login") // Session : 로그인 유지
-    public String login(@ModelAttribute MemberDTO memberDTO, HttpSession session) {
-        MemberDTO loginResult = memberService.login(memberDTO);
-        if (loginResult != null) {
-            // login 성공
-            session.setAttribute("loginEmail", loginResult.getMemberEmail());
-            return "main";
-        } else {
-            // login 실패
-            return "login";
-        }
-    }
-
-    @GetMapping("/member/")
-    public String findAll(Model model) {
-        List<MemberDTO> memberDTOList = memberService.findAll();
-        // 어떠한 html로 가져갈 데이터가 있다면 model 사용
-        model.addAttribute("memberList", memberDTOList);
-        return "list";
+        return ResponseEntity.ok(responseDto);
 
     }
 
-    @GetMapping("/member/{id}")
-    public String findById(@PathVariable Long id, Model model) {
-        MemberDTO memberDTO = memberService.findById(id);
-        // login 처럼 return 값에 따라 분류 할 수 있음
-        model.addAttribute("member", memberDTO);
-        return "detail";
-    }
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody SignInDto signInDto) throws Exception {
+        // 🚨 검문소: 데이터가 무사히 도착했는지 콘솔 창에 출력해서 확인합니다!
+        System.out.println("========== 로그인 시도 ==========");
+        System.out.println("입력받은 학번: " + signInDto.getStudentId());
+        System.out.println("입력받은 비밀번호: " + signInDto.getPassword());
+        System.out.println("===============================");
 
-    @GetMapping("/member/delete/{id}") // /member/{id}로 할 수 있도록 공부
-    public String deleteById(@PathVariable Long id){
-        memberService.deleteByid(id);
-
-        return "redirect:/member/"; // list 로 쓰면 껍데기만 보여짐
+        ResponseDto responseDto = memberService.login(signInDto);
+        return ResponseEntity.ok(responseDto);
     }
 }
