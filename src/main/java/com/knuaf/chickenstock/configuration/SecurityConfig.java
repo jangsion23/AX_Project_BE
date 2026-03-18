@@ -3,9 +3,7 @@ package com.knuaf.chickenstock.configuration;
 import com.knuaf.chickenstock.jwt.JwtAuthenticationFilter;
 import com.knuaf.chickenstock.jwt.JwtTokenProvider;
 import com.knuaf.chickenstock.repository.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -56,13 +54,10 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        // 허용할 프론트엔드 도메인 (예: 리액트 기본 포트 3000, 뷰 5173 등) -> 실제 베포할때는 도메인 주소 넣기
         configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
 
-        // 허용할 HTTP 메서드 (GET, POST, PUT, DELETE, OPTIONS 등) -> 그래도 오류 발생시 *List.of(*)
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
 
-        // 프론트에서 보낼 수 있는 헤더 종류 허용
         configuration.setAllowedHeaders(List.of("*"));
 
         // 프론트엔드에서 인증 정보(쿠키, 토큰 등)를 포함해서 보낼 수 있게 허용

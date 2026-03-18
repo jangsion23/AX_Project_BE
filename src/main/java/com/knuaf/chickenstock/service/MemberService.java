@@ -41,6 +41,7 @@ public class MemberService {
                 .loginId(signUpDto.getId())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .name(signUpDto.getName())
+                .roles(Collections.singletonList("ROLE_USER"))
                 .build();
 
         memberRepository.save(member);
@@ -55,7 +56,7 @@ public class MemberService {
     public ResponseDto login(SignInDto signInDto) {
         // 1. 유저 확인
         Member member = memberRepository.findByLoginId(signInDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 학번입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
         // 2. 비밀번호 확인
         if (!passwordEncoder.matches(signInDto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
