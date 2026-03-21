@@ -1,4 +1,4 @@
-package com.knuaf.chickenstock.dto;
+package com.knuaf.chickenstock.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

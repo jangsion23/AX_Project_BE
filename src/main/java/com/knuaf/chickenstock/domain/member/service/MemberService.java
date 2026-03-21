@@ -1,11 +1,14 @@
-package com.knuaf.chickenstock.service;
+package com.knuaf.chickenstock.domain.member.service;
 
-import com.knuaf.chickenstock.dto.*;
-import com.knuaf.chickenstock.entity.Member;
-import com.knuaf.chickenstock.entity.RefreshToken;
-import com.knuaf.chickenstock.jwt.JwtTokenProvider;
-import com.knuaf.chickenstock.repository.MemberRepository;
-import com.knuaf.chickenstock.repository.RefreshTokenRepository;
+import com.knuaf.chickenstock.domain.member.dto.ResponseDto;
+import com.knuaf.chickenstock.domain.member.dto.SignInDto;
+import com.knuaf.chickenstock.domain.member.dto.SignUpDto;
+import com.knuaf.chickenstock.domain.member.dto.TokenInfo;
+import com.knuaf.chickenstock.domain.member.entity.Member;
+import com.knuaf.chickenstock.domain.member.entity.RefreshToken;
+import com.knuaf.chickenstock.global.jwt.JwtTokenProvider;
+import com.knuaf.chickenstock.domain.member.repository.MemberRepository;
+import com.knuaf.chickenstock.domain.member.repository.RefreshTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,7 +30,7 @@ public class MemberService {
 
     public ResponseDto signup(SignUpDto signUpDto) throws Exception {
         //   중복 학번 검사
-        if (memberRepository.findByLoginId(signUpDto.getId()).isPresent()) {
+        if (memberRepository.findByLoginId(signUpDto.getLoginid()).isPresent()) {
             throw new Exception("이미 가입된 학번 입니다.");
         }
 
@@ -38,7 +41,7 @@ public class MemberService {
 
         // Member 엔티티 생성 (비밀번호는 반드시 encode해서 저장)
         Member member = Member.builder()
-                .loginId(signUpDto.getId())
+                .loginId(signUpDto.getLoginid())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .name(signUpDto.getName())
                 .roles(Collections.singletonList("ROLE_USER"))
@@ -55,7 +58,7 @@ public class MemberService {
 
     public ResponseDto login(SignInDto signInDto) {
         // 1. 유저 확인
-        Member member = memberRepository.findByLoginId(signInDto.getId())
+        Member member = memberRepository.findByLoginId(signInDto.getLoginid())
                 .orElseThrow(() -> new IllegalArgumentException("아이디 또는 비밀번호가 올바르지 않습니다."));
         // 2. 비밀번호 확인
         if (!passwordEncoder.matches(signInDto.getPassword(), member.getPassword())) {

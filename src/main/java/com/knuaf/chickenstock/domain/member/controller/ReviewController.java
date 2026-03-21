@@ -1,4 +1,4 @@
-package com.knuaf.chickenstock.controller;
+package com.knuaf.chickenstock.domain.member.controller;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.http.ResponseEntity;

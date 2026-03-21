@@ -1,6 +1,6 @@
-package com.knuaf.chickenstock.service;
+package com.knuaf.chickenstock.domain.member.service;
 
-import com.knuaf.chickenstock.repository.MemberRepository;
+import com.knuaf.chickenstock.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

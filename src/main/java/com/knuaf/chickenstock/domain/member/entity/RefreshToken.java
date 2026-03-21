@@ -1,4 +1,4 @@
-package com.knuaf.chickenstock.entity;
+package com.knuaf.chickenstock.domain.member.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

@@ -1,4 +1,4 @@
-package com.knuaf.chickenstock.dto;
+package com.knuaf.chickenstock.domain.member.dto;
 
 
 import jakarta.validation.constraints.NotBlank;
@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class SignUpDto {
 
     @NotBlank(message = "아이디를 입력해주세요.")
-    private String id;
+    private String loginid;
 
     @NotBlank(message = "이름을 입력해주세요.")
     private String name;

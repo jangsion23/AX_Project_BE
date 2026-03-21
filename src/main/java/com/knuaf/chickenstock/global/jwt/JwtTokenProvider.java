@@ -1,8 +1,7 @@
-package com.knuaf.chickenstock.jwt;
+package com.knuaf.chickenstock.global.jwt;
 
-import com.knuaf.chickenstock.dto.TokenInfo;
-import com.knuaf.chickenstock.entity.RefreshToken;
-import com.knuaf.chickenstock.repository.RefreshTokenRepository;
+import com.knuaf.chickenstock.domain.member.dto.TokenInfo;
+import com.knuaf.chickenstock.domain.member.repository.RefreshTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

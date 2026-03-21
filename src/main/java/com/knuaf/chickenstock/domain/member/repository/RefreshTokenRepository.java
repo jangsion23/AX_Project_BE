@@ -1,6 +1,6 @@
-package com.knuaf.chickenstock.repository;
+package com.knuaf.chickenstock.domain.member.repository;
 
-import com.knuaf.chickenstock.entity.RefreshToken;
+import com.knuaf.chickenstock.domain.member.entity.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

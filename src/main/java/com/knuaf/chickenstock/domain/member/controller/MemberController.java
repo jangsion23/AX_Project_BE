@@ -1,9 +1,9 @@
-package com.knuaf.chickenstock.controller;
+package com.knuaf.chickenstock.domain.member.controller;
 
-import com.knuaf.chickenstock.dto.ResponseDto;
-import com.knuaf.chickenstock.dto.SignInDto;
-import com.knuaf.chickenstock.dto.SignUpDto;
-import com.knuaf.chickenstock.service.MemberService;
+import com.knuaf.chickenstock.domain.member.dto.ResponseDto;
+import com.knuaf.chickenstock.domain.member.dto.SignInDto;
+import com.knuaf.chickenstock.domain.member.dto.SignUpDto;
+import com.knuaf.chickenstock.domain.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

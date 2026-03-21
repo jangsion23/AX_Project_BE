@@ -1,8 +1,8 @@
-package com.knuaf.chickenstock.configuration;
+package com.knuaf.chickenstock.global.configuration;
 
-import com.knuaf.chickenstock.jwt.JwtAuthenticationFilter;
-import com.knuaf.chickenstock.jwt.JwtTokenProvider;
-import com.knuaf.chickenstock.repository.RefreshTokenRepository;
+import com.knuaf.chickenstock.global.jwt.JwtAuthenticationFilter;
+import com.knuaf.chickenstock.global.jwt.JwtTokenProvider;
+import com.knuaf.chickenstock.domain.member.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

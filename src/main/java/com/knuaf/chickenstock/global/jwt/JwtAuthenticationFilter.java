@@ -1,10 +1,10 @@
-package com.knuaf.chickenstock.jwt;
+package com.knuaf.chickenstock.global.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.knuaf.chickenstock.dto.ResponseDto;
-import com.knuaf.chickenstock.dto.TokenInfo;
-import com.knuaf.chickenstock.entity.RefreshToken;
-import com.knuaf.chickenstock.repository.RefreshTokenRepository;
+import com.knuaf.chickenstock.domain.member.dto.ResponseDto;
+import com.knuaf.chickenstock.domain.member.dto.TokenInfo;
+import com.knuaf.chickenstock.domain.member.entity.RefreshToken;
+import com.knuaf.chickenstock.domain.member.repository.RefreshTokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;

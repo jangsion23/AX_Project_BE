@@ -1,4 +1,4 @@
-package com.knuaf.chickenstock.dto;
+package com.knuaf.chickenstock.domain.member.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SignInDto {
 
-    private String id;
+    private String loginid;
     private String password;
 
 }
