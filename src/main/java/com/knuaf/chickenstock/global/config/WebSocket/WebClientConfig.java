@@ -1,20 +1,17 @@
-package com.knuaf.chickenstock.global.config.WebSocket; // 본인 프로젝트 패키지 경로에 맞게 수정!
+package com.knuaf.chickenstock.global.config.WebSocket;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
-import tools.jackson.databind.ObjectMapper;
-
+import com.fasterxml.jackson.databind.ObjectMapper; // 올바른 경로로 수정
 
 @Configuration
 public class WebClientConfig {
-
     @Bean
     public WebClient webClient() {
-        return WebClient.builder()
-                .baseUrl("https://openapivts.koreainvestment.com:29443")
-                .build();
+        return WebClient.builder().baseUrl("https://openapivts.koreainvestment.com:29443").build();
     }
+
     @Bean
     public ObjectMapper objectMapper() {
         return new ObjectMapper();

@@ -5,7 +5,6 @@ import com.knuaf.chickenstock.jwt.JwtTokenProvider;
 import com.knuaf.chickenstock.repository.RefreshTokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

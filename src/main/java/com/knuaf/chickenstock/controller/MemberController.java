@@ -4,6 +4,7 @@ import com.knuaf.chickenstock.dto.ResponseDto;
 import com.knuaf.chickenstock.dto.SignInDto;
 import com.knuaf.chickenstock.dto.SignUpDto;
 import com.knuaf.chickenstock.service.MemberService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,7 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody SignInDto signInDto) throws Exception {
-
+    public ResponseEntity<?> login(@Valid @RequestBody SignInDto signInDto) throws Exception { // @Valid 추가
         ResponseDto responseDto = memberService.login(signInDto);
         return ResponseEntity.ok(responseDto);
     }
