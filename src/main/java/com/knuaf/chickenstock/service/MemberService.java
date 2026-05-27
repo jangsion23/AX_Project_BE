@@ -25,31 +25,24 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public ResponseDto join(SignUpDto signUpDto) throws Exception {
-        // 중복 학번 검사
+    public ResponseDto join(SignUpDto signUpDto) { // throws Exception 제거
         if (memberRepository.findByLoginId(signUpDto.getId()).isPresent()) {
-            throw new Exception("이미 가입된 학번 입니다.");
+            throw new IllegalArgumentException("이미 가입된 학번 입니다.");
         }
-
-        // 비밀번호 일치 확인
         if (!signUpDto.getPassword().equals(signUpDto.getCheckPassword())) {
-            throw new Exception("비밀번호가 일치 하지 않습니다.");
+            throw new IllegalArgumentException("비밀번호가 일치 하지 않습니다.");
         }
 
-        // Member 엔티티 생성 (비밀번호는 반드시 encode해서 저장)
         Member member = Member.builder()
                 .loginId(signUpDto.getId())
                 .password(passwordEncoder.encode(signUpDto.getPassword()))
                 .name(signUpDto.getName())
+                .roles(Collections.singletonList("ROLE_USER")) // 기본 권한 명시적 부여
                 .build();
 
         memberRepository.save(member);
 
-        return ResponseDto.builder()
-                .status(200)
-                .responseMessage("회원가입 성공")
-                .data(null)
-                .build();
+        return ResponseDto.builder().status(200).responseMessage("회원가입 성공").data(null).build();
     }
 
     public ResponseDto login(SignInDto signInDto) {
